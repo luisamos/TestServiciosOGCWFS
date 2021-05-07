@@ -1,11 +1,11 @@
 import sys, os
 from osgeo import ogr, gdal
 
-# Params
-_OUT_DIR = r'/home/luisamos/Descargas'
-_GEOMETRY_TYPE = 'polygon'     # options: point, line, polygon
-_WFS_URL = 'https://geo.minagri.gob.pe/arcgis/services/servicios_ogc/Peru_midagri_1502/MapServer/WFSServer?'
-#_WFS_URL = 'https://geo.minagri.gob.pe/arcgis/services/servicios_ogc/Peru_midagri_1501_puno/MapServer/WFSServer'
+# Parametros
+ruta_descarga = r'/home/luisamos/Descargas'
+tipo_geometria = 'polygon'     # options: point, line, polygon
+url_wfs = 'https://geo.minagri.gob.pe/arcgis/services/servicios_ogc/Peru_midagri_1501/MapServer/WFSServer?VERSION=1.0.0&MAXFEATURES=1'
+#url_wfs = 'https://geo.minagri.gob.pe/arcgis/services/servicios_ogc/Peru_midagri_1501_puno/MapServer/WFSServer?'
 
 driver_wfs = ogr.GetDriverByName('WFS')
 #gdal.SetConfigOption('GDAL_HTTP_UNSAFESSL', 'YES')
@@ -13,39 +13,39 @@ driver_wfs = ogr.GetDriverByName('WFS')
 #gdal.SetConfigOption('GDAL_IGNORE_AXIS_ORIENTATION', 'NO')
 gdal.SetConfigOption('GML_INVERT_AXIS_ORDER_IF_LAT_LONG', 'NO')
 
+wfs = driver_wfs.Open('WFS:' + url_wfs)
+#wfs = driver_wfs.Open('WFS:'+ url_wfs)
+total_capas = wfs.GetLayerCount()
+print("Cantidad de capas tematicas: "+str(total_capas))
 
-wfs = driver_wfs.Open('WFS:' + _WFS_URL)
-
-layer_count = wfs.GetLayerCount()
-
-for i in range(layer_count):
-    layer = wfs.GetLayerByIndex(i)
-    layer_name = layer.GetName()
+for i in range(total_capas):
+    capa = wfs.GetLayerByIndex(i)
+    nombre_capa = capa.GetName()
     driver_shapefile = ogr.GetDriverByName('ESRI Shapefile')
-    nombre_shp = layer_name + '.shp'
-    out_feature = os.path.join(_OUT_DIR, nombre_shp)
-    data_source = driver_shapefile.CreateDataSource(out_feature)
-    prj = layer.GetSpatialRef()
+    nombre_shp = nombre_capa + '.shp'
+    ruta_descarga_shp = os.path.join(ruta_descarga, nombre_shp)
+    data_source = driver_shapefile.CreateDataSource(ruta_descarga_shp)
+    proyeccion = capa.GetSpatialRef()
     
-    if _GEOMETRY_TYPE == 'point':
+    if tipo_geometria == 'point':
         geom = ogr.wkbPoint
-    elif _GEOMETRY_TYPE == 'line':
+    elif tipo_geometria == 'line':
         geom = ogr.wkbLineString
-    elif _GEOMETRY_TYPE == 'polygon':
+    elif tipo_geometria == 'polygon':
         geom = ogr.wkbPolygon
-    layer_new = data_source.CreateLayer(layer_name, prj, geom)
-    layer_def = layer.GetLayerDefn()
-    total_registros = layer_def.GetFieldCount()
-    print("Total de registros: "+ str(total_registros))
-    for field in range(total_registros):
-        field_name = layer_def.GetFieldDefn(field).GetName()
-        if field_name in ('SHAPE.STArea__', 'SHAPE.STLength__'):
+    nueva_capa = data_source.CreateLayer(nombre_capa, proyeccion, geom)
+    propiedades_capa = capa.GetLayerDefn()
+    total_columnas = propiedades_capa.GetFieldCount()
+    print("Total de Columnas: "+ str(total_columnas))
+    for columnas in range(total_columnas):
+        nombre_columna = propiedades_capa.GetFieldDefn(columnas).GetName()
+        if nombre_columna in ('SHAPE.STArea__', 'SHAPE.STLength__'):
             continue
-        layer_new.CreateField(layer_def.GetFieldDefn(field))
-    i=0
-    for row in layer:
-    	layer_new.CreateFeature(row)
-    	i=i+1
-    	print("Insertando registro: "+str(i))
+        nueva_capa.CreateField(propiedades_capa.GetFieldDefn(columnas))
 
-    print("Finalizado")       
+    for fila in capa:
+    	nueva_capa.CreateFeature(fila)
+    	print("Insertando FID: "+str(fila.GetFID()))
+
+    print("Total de registros:"+ str(len(capa)))
+print("Finalizado")       
