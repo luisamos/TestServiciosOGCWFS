@@ -18,8 +18,7 @@ wfs = driver_wfs.Open('WFS:' + url_wfs)
 #wfs = driver_wfs.Open('WFS:'+ url_wfs)
 total_capas = wfs.GetLayerCount()
 print("Cantidad de capas tematicas: "+str(total_capas))
-now = datetime.now()
-print("Fecha de inicio:"+ str(now))
+fecha_inicio = datetime.now()
 
 for i in range(total_capas):
     capa = wfs.GetLayerByIndex(i)
@@ -51,6 +50,8 @@ for i in range(total_capas):
     	print("Insertando FID: "+str(fila.GetFID()))
 
     print("Total de registros:"+ str(len(capa)))
-now = datetime.now()
-print("Fecha de inicio:"+ str(now))
+    
+print("Fecha de inicio: "+ str(fecha_inicio))
+fecha_fin = datetime.now()
+print("Fecha fin: "+ str(fecha_fin))
 print("Finalizado")       
