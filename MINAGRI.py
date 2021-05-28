@@ -5,7 +5,7 @@ from datetime import datetime
 # Parametros
 ruta_descarga = r'/apps/python'
 tipo_geometria = 'polygon'     # options: point, line, polygon
-url_wfs = 'https://geo.minagri.gob.pe/arcgis/services/servicios_ogc/Peru_midagri_1501_puno/MapServer/WFSServer?VERSION=1.0.0&MAXFEATURES=127137'
+url_wfs = 'https://geo.minagri.gob.pe/arcgis/services/servicios_ogc/Peru_midagri_1501_junin/MapServer/WFSServer?VERSION=1.0.0&MAXFEATURES=75263'
 #url_wfs = 'https://geo.minagri.gob.pe/arcgis/services/servicios_ogc/Peru_midagri_1501_puno/MapServer/WFSServer?'
 
 driver_wfs = ogr.GetDriverByName('WFS')
@@ -51,6 +51,7 @@ for i in range(total_capas):
 
     print("Total de registros:"+ str(len(capa)))
     
+print("URL: "+ url_wfs)
 print("Fecha de inicio: "+ str(fecha_inicio))
 fecha_fin = datetime.now()
 print("Fecha fin: "+ str(fecha_fin))
