@@ -1,10 +1,11 @@
 import sys, os
 from osgeo import ogr, gdal
+from datetime import datetime
 
 # Parametros
 ruta_descarga = r'/home/luisamos/Descargas'
 tipo_geometria = 'polygon'     # options: point, line, polygon
-url_wfs = 'https://geo.minagri.gob.pe/arcgis/services/servicios_ogc/Peru_midagri_1501/MapServer/WFSServer?VERSION=1.0.0&MAXFEATURES=127137'
+url_wfs = 'https://geo.minagri.gob.pe/arcgis/services/servicios_ogc/Peru_midagri_1501_amazonas/MapServer/WFSServer?VERSION=1.0.0&MAXFEATURES=13066'
 #url_wfs = 'https://geo.minagri.gob.pe/arcgis/services/servicios_ogc/Peru_midagri_1501_puno/MapServer/WFSServer?'
 
 driver_wfs = ogr.GetDriverByName('WFS')
@@ -17,6 +18,8 @@ wfs = driver_wfs.Open('WFS:' + url_wfs)
 #wfs = driver_wfs.Open('WFS:'+ url_wfs)
 total_capas = wfs.GetLayerCount()
 print("Cantidad de capas tematicas: "+str(total_capas))
+now = datetime.now()
+print("Fecha de inicio:"+ str(now))
 
 for i in range(total_capas):
     capa = wfs.GetLayerByIndex(i)
@@ -48,4 +51,6 @@ for i in range(total_capas):
     	print("Insertando FID: "+str(fila.GetFID()))
 
     print("Total de registros:"+ str(len(capa)))
+now = datetime.now()
+print("Fecha de inicio:"+ str(now))
 print("Finalizado")       
