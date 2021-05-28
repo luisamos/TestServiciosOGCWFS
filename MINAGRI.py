@@ -5,7 +5,7 @@ from datetime import datetime
 # Parametros
 ruta_descarga = r'/apps/python'
 tipo_geometria = 'polygon'     # options: point, line, polygon
-url_wfs = 'https://geo.minagri.gob.pe/arcgis/services/servicios_ogc/Peru_midagri_1501_apurimac/MapServer/WFSServer?VERSION=1.0.0&MAXFEATURES=32453'
+url_wfs = 'https://geo.minagri.gob.pe/arcgis/services/servicios_ogc/Peru_midagri_1501_arequipa/MapServer/WFSServer?VERSION=1.0.0&MAXFEATURES=43760'
 #url_wfs = 'https://geo.minagri.gob.pe/arcgis/services/servicios_ogc/Peru_midagri_1501_puno/MapServer/WFSServer?'
 
 driver_wfs = ogr.GetDriverByName('WFS')
